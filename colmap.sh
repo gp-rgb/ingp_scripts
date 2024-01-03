@@ -1,7 +1,7 @@
 #!/bin/bash
-cd /mnt/instance
+cd /home/ubuntu/georgia
 
-sudo apt-get install -o=dir::cache=/mnt/instance/colmap_cache/\
+sudo apt-get install \
     git \
     cmake \
     ninja-build \
@@ -23,13 +23,3 @@ sudo apt-get install -o=dir::cache=/mnt/instance/colmap_cache/\
     libcgal-dev \
     libceres-dev
 
-git clone https://github.com/colmap/colmap.git
-cd /mnt/instance/colmap
-git checkout dev
-mkdir build
-cd build
-cmake .. -GNinja
-ninja
-sudo ninja install
-
-colmap -h
