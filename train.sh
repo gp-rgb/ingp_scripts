@@ -51,6 +51,6 @@ echo "mesh_resolution: $mesh_resolution"
 
 cd ${data_path}
 rm ${data_path}/transforms.json
-python ${ngp_path}/scripts/colmap2nerf.py --colmap_matcher exhaustive --run_colmap --aabb_scale ${scene_size}
+python3 ${ngp_path}/scripts/colmap2nerf.py --colmap_matcher exhaustive --run_colmap --aabb_scale ${scene_size}
 cd ${ngp_path}
-python ${ngp_path}/scripts/run.py ${data_path} --save_mesh ${dest_path}/mesh.${format} --marching_cubes_res ${mesh_resolution}
+python3 ${ngp_path}/scripts/run.py ${data_path} --save_mesh ${dest_path}/mesh.${format} --marching_cubes_res ${mesh_resolution}

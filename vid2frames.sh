@@ -1,5 +1,6 @@
 #!/bin/bash
-
+conda init bash
+source ~/.bashrc
 conda activate ingp_env
 cd /home/ubuntu/georgia/data
 python /home/ubuntu/georgia/instant-ngp/scripts/colmap2nerf.py --video_in yard.mp4 --video_fps 4 --run_colmap --aabb_scale 32
