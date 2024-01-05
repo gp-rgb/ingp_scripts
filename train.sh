@@ -1,5 +1,5 @@
 #!/bin/bash
-
+export QT_QPA_PLATFORM=offscreen
 ngp_path=/home/ubuntu/georgia/instant-ngp
 data_path=/home/ubuntu/georgia/instant-ngp/data/nerf/fox
 dest_path=/home/ubuntu/georgia/data
@@ -51,6 +51,7 @@ echo "mesh_resolution: $mesh_resolution"
 
 cd ${data_path}
 rm ${data_path}/transforms.json
-python3 ${ngp_path}/scripts/colmap2nerf.py --colmap_matcher exhaustive --run_colmap --aabb_scale ${scene_size}
+#python3 ${ngp_path}/scripts/colmap2nerf.py --colmap_matcher exhaustive --run_colmap --aabb_scale ${scene_size}
+python3 ${ngp_path}/scripts/colmap2nerf.py --run_colmap --aabb_scale ${scene_size}
 cd ${ngp_path}
 python3 ${ngp_path}/scripts/run.py ${data_path} --save_mesh ${dest_path}/mesh.${format} --marching_cubes_res ${mesh_resolution}

@@ -1,12 +1,2 @@
-wget https://developer.download.nvidia.com/compute/cuda/12.1.1/local_installers/cuda_12.1.1_530.30.02_linux.run
-B
-B
-B
-B
-B
-B
+sudo apt-get install -y cuda-drivers
 
-C
-I
-
-sudo sh cuda_12.1.1_530.30.02_linux.run
