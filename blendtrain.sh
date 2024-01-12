@@ -7,8 +7,8 @@ conda activate ingp_env8
 export QT_QPA_PLATFORM=offscreen
 
 ngp_path=/home/ubuntu/georgia/instant-ngp
-data_path=/home/ubuntu/georgia/data/plant
-mesh_name=plant.obj
+data_path=/home/ubuntu/georgia/data/bunny
+mesh_name=mesh.obj
 snap=checkpoint.ingp
 mesh_resolution=256
 while [[ $# -gt 0 ]]; do
@@ -41,12 +41,25 @@ echo "data_path: $data_path"
 echo "mesh_resolution: $mesh_resolution" 
 
 cd ${data_path}
-rm ${data_path}/transforms.json
+mkdir -p traindata testdata
+mv train traindata
+mv transforms_train.json traindata
+mv transforms_test.json testdata
 
-
-python ${ngp_path}/scripts/record3d2nerf.py --scene ${data_path}
 
 cd ${ngp_path}
 
-python3 ${ngp_path}/scripts/run.py ${data_path} --save_mesh ${data_path}/${mesh_name} --marching_cubes_res ${mesh_resolution} --save_snapshot ${data_path}/${snap} 
+python3 ${ngp_path}/scripts/run.py \
+    --scene ${data_path}/traindata/ \
+    --save_snapshot ${data_path}/${snap} \
+    --screenshot_transforms ${data_path}/testdata/transforms_test.json \
+    --screenshot_dir ${data_path}/test_data/ \
+    --screenshot_spp 16 \
+    --width 1920 \
+    --height 1080 \
+   --n_steps 2000
 
+# width and height 0 preserves blendernerf default
+
+
+#${data_path} --save_mesh ${data_path}/${mesh_name} --marching_cubes_res ${mesh_resolution} --save_snapshot ${data_path}/${snapshot}

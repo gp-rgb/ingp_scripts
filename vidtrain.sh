@@ -86,4 +86,4 @@ if ((load_snap == 0))
         python3 ${ngp_path}/scripts/run.py ${data_path} --save_mesh ${data_path}/${mesh_name} --marching_cubes_res ${mesh_resolution} --sharpen ${sharpen} --save_snapshot ${data_path}/${snapshot}
     else
         python3 ${ngp_path}/scripts/run.py ${data_path} --save_mesh ${data_path}/${mesh_name} --marching_cubes_res ${mesh_resolution} --    sharpen ${sharpen} --save_snapshot ${data_path}/${snapshot} 
-
+fi

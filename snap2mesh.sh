@@ -7,18 +7,19 @@ conda activate ingp_env8
 export QT_QPA_PLATFORM=offscreen
 
 ngp_path=/home/ubuntu/georgia/instant-ngp
-data_path=/home/ubuntu/georgia/data/plant
-mesh_name=plant.obj
-snap=checkpoint.ingp
+data_path=/home/ubuntu/georgia/data/chair
+snap_name=checkpoint.ingp
+mesh_name=chair.obj
 mesh_resolution=256
+
 while [[ $# -gt 0 ]]; do
     case "$1" in
-        --ngp_path)
-            ngp_path="$2"
-            shift 2
-            ;;
         --data_path)
             data_path="$2"
+            shift 2
+            ;;
+        --snap_name)
+            snap_path="$2"
             shift 2
             ;;
 	    --mesh_resolution)
@@ -36,17 +37,4 @@ while [[ $# -gt 0 ]]; do
     esac
 done
 
-echo "ngp_path: $ngp_path"
-echo "data_path: $data_path"
-echo "mesh_resolution: $mesh_resolution" 
-
-cd ${data_path}
-rm ${data_path}/transforms.json
-
-
-python ${ngp_path}/scripts/record3d2nerf.py --scene ${data_path}
-
-cd ${ngp_path}
-
-python3 ${ngp_path}/scripts/run.py ${data_path} --save_mesh ${data_path}/${mesh_name} --marching_cubes_res ${mesh_resolution} --save_snapshot ${data_path}/${snap} 
-
+python3 ${ngp_path}/scripts/run.py --load_snapshot ${data_path}/${snap_name} --n_steps 0 --save_mesh ${data_path}/${mesh_name} --marching_cubes_res ${mesh_resolution}
