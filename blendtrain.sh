@@ -57,7 +57,7 @@ python3 ${ngp_path}/scripts/run.py \
     --screenshot_spp 16 \
     --width 1920 \
     --height 1080 \
-   --n_steps 2000
+   --n_steps 8000
 
 # width and height 0 preserves blendernerf default
 
