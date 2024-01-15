@@ -71,10 +71,12 @@ echo "DATASET is:       ${dataset}"
 echo "SOURCE PATH is:   ${source_path}"
 
 ## PREPARE DATA
+cd ${source_path}
+
 case ${type} in
     video)
         echo "Preparing VIDEO Data..."
-        if [ "$overwrite" -eq 1 ] || ! [ -f "${data_path}/transforms.json" ]; then
+        if [ "$overwrite" -eq 1 ] || ! [ -f "${source_path}/transforms.json" ]; then
             ## run colmap if: overwrite is set OR transforms do not yet exist
             rm ${source_path}/transforms.json
             python3 ${ngp_path}/scripts/colmap2nerf.py \
@@ -88,12 +90,11 @@ case ${type} in
         ;;
     record3d)
         echo "Preparing RECORD3D Data..."
-        python ${ngp_path}/scripts/record3d2nerf.py --scene ${source_path}
+        python ${ngp_path}/scripts/record3d2nerf.py --scene ${source_path} --subsample 5
         ;;
     images)
         echo "Preparing IMAGE Data..."
-        cd ${source_path}
-        if [ "$overwrite" -eq 1 ] || ! [ -f "${data_path}/transforms.json" ]; then
+        if [ "$overwrite" -eq 1 ] || ! [ -f "${source_path}/transforms.json" ]; then
             ## run colmap if: overwrite is set OR transforms do not yet exist
             rm ${source_path}/transforms.json
             python3 ${ngp_path}/scripts/colmap2nerf.py \
@@ -105,7 +106,6 @@ case ${type} in
         ;;
     blender)
         echo "Preparing BLENDER Data..."
-        cd ${source_path}
         mkdir -p traindata testdata
         mv train traindata
         mv transforms_train.json traindata
