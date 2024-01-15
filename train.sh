@@ -19,6 +19,11 @@ sharpen=0
 overwrite=0
 n_steps=4096
 
+if [[$# <= 2]]; then
+    echo "Usage: $(basename $0) [TYPE] [DATASET]..."
+    exit 1
+fi
+
 type="$1"
 dataset="$2"
 shift 2
@@ -26,10 +31,6 @@ shift 2
 echo "DATATYPE IS:  ${type}"
 echo "DATASET IS:   ${dataset}"
 
-if [[$# <= 2]]; then
-    echo "Usage: $(basename $0) [TYPE] [DATASET]..."
-    exit 1
-fi
 
 while getopts 'a:f:hn:os:' opt; do
   case "$opt" in
