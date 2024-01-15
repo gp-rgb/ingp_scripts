@@ -27,3 +27,36 @@ echo "DATATYPE IS:  ${type}"
 echo "DATASET IS:   ${dataset}"
 
 
+while getopts 'a:f:hn:os:' opt; do
+  case "$opt" in
+    a|aabb)
+        aabb=${OPTARG}
+        ;;
+
+    f|fps)
+        fps=${OPTARG}
+        ;;
+
+    n|n_steps)
+        n_steps=${OPTARG}
+        ;;
+    o|overwrite)
+        overwrite=1
+        ;;
+    s|sharpen)
+        sharpen=${OPTARG}
+        ;;
+    ?|h)
+      echo "Usage: $(basename $0)"
+      echo "    data type: video, record3d, images, blender"
+      echo "    dataset name: chair, plant, statue, etc."
+      echo "    -a|--aabb:       <scene size>"
+      echo "    -f|--fps:        <frames per second>"
+      echo "    -n|--n_steps:    <number of training steps>"
+      echo "    -o|--overwrite   "
+      echo "    -s|--sharpen:    <how much to sharpen each frame, 0 to 1.0>"
+      exit 1
+      ;;
+  esac
+done
+shift "$(($OPTIND -1))"
