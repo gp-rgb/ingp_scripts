@@ -1,11 +1,22 @@
 #!/bin/bash
 export QT_QPA_PLATFORM=offscreen
+
+
+
+
+
+
 ngp_path=/home/ubuntu/georgia/instant-ngp
 data_path=/home/ubuntu/georgia/instant-ngp/data/nerf/fox
 dest_path=/home/ubuntu/georgia/data
 scene_size=2
 format=obj
 mesh_resolution=256
+
+
+
+
+
 
 
 while [[ $# -gt 0 ]]; do

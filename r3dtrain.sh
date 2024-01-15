@@ -11,6 +11,14 @@ data_path=/home/ubuntu/georgia/data/statue
 mesh_name=statue.obj
 snap=checkpoint.ingp
 mesh_resolution=64
+
+
+
+
+
+
+
+
 while [[ $# -gt 0 ]]; do
     case "$1" in
         --ngp_path)
