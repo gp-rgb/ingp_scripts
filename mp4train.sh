@@ -11,13 +11,24 @@ data_path=/home/ubuntu/georgia/data/chair
 video_name=chair.mp4
 mesh_name=chair.obj
 snap=checkpoint.ingp
-video=0
-scene_size=2
-mesh_resolution=256
+video=1
+scene_size=1
+mesh_resolution=64
 fps=10
 sharpen=0
+n_steps=4000
+overwrite_tfs=0
+
 while [[ $# -gt 0 ]]; do
     case "$1" in
+        --overwrite_tfms)
+            overwrite_tfms=1
+            shift 1
+            ;;
+        --n_steps)
+            n_steps="$2"
+            shift 2
+            ;;
         --sharpen)
             sharpen="$2"
             shift 2
@@ -69,21 +80,19 @@ echo "format: $format"
 echo "mesh_resolution: $mesh_resolution" 
 
 cd ${data_path}
-rm ${data_path}/transforms.json
 
-#python /home/ubuntu/georgia/instant-ngp/scripts/run.py /home/ubuntu/georgia/data/ --save_mesh /home/ubuntu/georgia/data/mesh.obj --marching_cubes_res 256
+if [ "$overwrite_tfms" -eq 1 ] || ! [ -f "${data_path}/transforms.json" ]; then
+    
+    rm ${data_path}/transforms.json
 
-if ((video == 1))
-    then # INPUT IS VIDEO
-        python3 ${ngp_path}/scripts/colmap2nerf.py --video_in ${video_name} --video_fps ${fps} --run_colmap --aabb_scale ${scene_size} --colmap_matcher sequential --overwrite
-    else # INPUT IS IMAGE DATASET
-        python3 ${ngp_path}/scripts/colmap2nerf.py --colmap_matcher exhaustive --run_colmap --aabb_scale ${scene_size} --overwrite
+    if ((video == 1))
+        then # INPUT IS VIDEO
+            rm ${data_path}/images/ -r
+            python3 ${ngp_path}/scripts/colmap2nerf.py --video_in ${video_name} --video_fps ${fps} --run_colmap --aabb_scale ${scene_size} --colmap_matcher sequential 
+        else # INPUT IS IMAGE DATASET
+            python3 ${ngp_path}/scripts/colmap2nerf.py --colmap_matcher exhaustive --run_colmap --aabb_scale ${scene_size}
+    fi
 fi
 
 cd ${ngp_path}
-if ((load_snap == 0))
-    then
-        python3 ${ngp_path}/scripts/run.py ${data_path} --save_mesh ${data_path}/${mesh_name} --marching_cubes_res ${mesh_resolution} --sharpen ${sharpen} --save_snapshot ${data_path}/${snapshot}
-    else
-        python3 ${ngp_path}/scripts/run.py ${data_path} --save_mesh ${data_path}/${mesh_name} --marching_cubes_res ${mesh_resolution} --    sharpen ${sharpen} --save_snapshot ${data_path}/${snapshot} 
-fi
+python3 ${ngp_path}/scripts/run.py ${data_path} --save_mesh ${data_path}/${mesh_name} --marching_cubes_res ${mesh_resolution} --sharpen ${sharpen} --save_snapshot ${data_path}/${snap} --n_steps ${n_steps}
