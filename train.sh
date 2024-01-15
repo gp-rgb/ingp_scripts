@@ -19,8 +19,8 @@ sharpen=0
 overwrite=0
 n_steps=4096
 
-type="$2"
-dataset="$3"
+type="$1"
+dataset="$2"
 shift 3
 
 echo "DATATYPE IS:  ${type}"
