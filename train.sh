@@ -18,6 +18,8 @@ sharpen=0
 ## TRAINING SETTINGS
 overwrite=0
 n_steps=4096
+render=0
+mesh=0
 
 ## PARSE ARGUMENTS
 if [ $# -lt 2 ]; then
@@ -29,7 +31,7 @@ type="$1"
 dataset="$2"
 shift 2
 
-while getopts 'a:f:hn:os:' opt; do
+while getopts 'a:f:hn:m:ors:' opt; do
   case "$opt" in
     a|aabb)
         aabb=${OPTARG}
@@ -42,8 +44,14 @@ while getopts 'a:f:hn:os:' opt; do
     n|n_steps)
         n_steps=${OPTARG}
         ;;
+    m|mesh)
+        mesh=${OPTARG}
+        ;;
     o|overwrite)
         overwrite=1
+        ;;
+    r|render)
+        render=1
         ;;
     s|sharpen)
         sharpen=${OPTARG}
@@ -56,7 +64,9 @@ while getopts 'a:f:hn:os:' opt; do
       echo "    -a,--aabb:       <scene size>"
       echo "    -f,--fps:        <frames per second>"
       echo "    -n,--n_steps:    <number of training steps>"
+      echo "    -m,--mesh:        <mesh resolution (64, 128, 256, 512)>"
       echo "    -o,--overwrite   "
+      echo "    -r,--render   "
       echo "    -s,--sharpen:    <how much to sharpen each frame, 0 to 1.0>"
       exit 1
       ;;
@@ -89,6 +99,8 @@ case ${type} in
         fi
         ;;
     record3d)
+        mv ${dataset}.r3d ${dataset}.zip
+        unzip ${dataset}.zip
         echo "Preparing RECORD3D Data..."
         python ${ngp_path}/scripts/record3d2nerf.py --scene ${source_path} --subsample 5
         ;;
@@ -124,4 +136,26 @@ python3 ${ngp_path}/scripts/run.py \
     ${source_path} \
     --save_snapshot ${data_path}/checkpoint.ingp \
     --n_steps ${n_steps}
+
+## GENERATE OUTPUTS
+if [ "$render" -eq 1 ]; then
+    python3 ${ngp_path}/scripts/run.py \
+        --load_snapshot ${source_path}/checkpoint.ingb \
+        --screenshot_transforms ${data_path}/transforms.json \
+        --screenshot_dir ${data_path}/renders/ \
+        --screenshot_spp 16 \
+        --width 720 --height 1280 \
+        --n_steps 0
+    zip renders.zip renders -r
+    
+fi
+
+if ! [ "$mesh" -eq 0 ]; then
+    python3 ${ngp_path}/scripts/run.py \
+        --load_snapshot ${data_path}/checkpoint.ingb \
+        --save_mesh ${data_path}/${dataset}.obj \
+        --marching_cubes_res ${mesh} \
+        --n_steps 0
+    zip ${dataset}.zip ${dataset}.obj
+fi
 
