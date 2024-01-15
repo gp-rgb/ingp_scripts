@@ -134,26 +134,26 @@ esac
 cd ${ngp_path}
 python3 ${ngp_path}/scripts/run.py \
     ${source_path} \
-    --save_snapshot ${data_path}/checkpoint.ingp \
+    --save_snapshot ${source_path}/checkpoint.ingp \
     --n_steps ${n_steps}
 
 ## GENERATE OUTPUTS
 if [ "$render" -eq 1 ]; then
     python3 ${ngp_path}/scripts/run.py \
-        --load_snapshot ${source_path}/checkpoint.ingb \
-        --screenshot_transforms ${data_path}/transforms.json \
-        --screenshot_dir ${data_path}/renders/ \
+        --load_snapshot ${source_path}/checkpoint.ingp \
+        --screenshot_transforms ${source_path}/transforms.json \
+        --screenshot_dir ${source_path}/renders/ \
         --screenshot_spp 16 \
         --width 720 --height 1280 \
         --n_steps 0
-    zip renders.zip renders -r
+    zip renders.zip ${source_path}/renders/ -r
     
 fi
 
 if ! [ "$mesh" -eq 0 ]; then
     python3 ${ngp_path}/scripts/run.py \
-        --load_snapshot ${data_path}/checkpoint.ingb \
-        --save_mesh ${data_path}/${dataset}.obj \
+        --load_snapshot ${data_path}/checkpoint.ingp \
+        --save_mesh ${source_path}/${dataset}.obj \
         --marching_cubes_res ${mesh} \
         --n_steps 0
     zip ${dataset}.zip ${dataset}.obj
