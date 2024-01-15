@@ -26,6 +26,10 @@ shift 2
 echo "DATATYPE IS:  ${type}"
 echo "DATASET IS:   ${dataset}"
 
+if [[$# <= 2]]; then
+    echo "Usage: $(basename $0) [TYPE] [DATASET]..."
+    exit 1
+fi
 
 while getopts 'a:f:hn:os:' opt; do
   case "$opt" in
@@ -47,14 +51,15 @@ while getopts 'a:f:hn:os:' opt; do
         sharpen=${OPTARG}
         ;;
     ?|h)
-      echo "Usage: $(basename $0)"
-      echo "    data type: video, record3d, images, blender"
-      echo "    dataset name: chair, plant, statue, etc."
-      echo "    -a|--aabb:       <scene size>"
-      echo "    -f|--fps:        <frames per second>"
-      echo "    -n|--n_steps:    <number of training steps>"
-      echo "    -o|--overwrite   "
-      echo "    -s|--sharpen:    <how much to sharpen each frame, 0 to 1.0>"
+      echo "Usage: $(basename $0) [TYPE] [DATASET]..."
+      echo "    TYPE: video, record3d, images, blender"
+      echo "    DATASET: chair, plant, statue, etc."
+      echo "    Optional Arguments:"
+      echo "    -a,--aabb:       <scene size>"
+      echo "    -f,--fps:        <frames per second>"
+      echo "    -n,--n_steps:    <number of training steps>"
+      echo "    -o,--overwrite   "
+      echo "    -s,--sharpen:    <how much to sharpen each frame, 0 to 1.0>"
       exit 1
       ;;
   esac
