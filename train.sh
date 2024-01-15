@@ -21,9 +21,9 @@ n_steps=4096
 
 type="$1"
 dataset="$2"
-shift 3
+shift 2
 
 echo "DATATYPE IS:  ${type}"
 echo "DATASET IS:   ${dataset}"
-echo "OPTSTRING IS: ${2} ${3}"
+
 
