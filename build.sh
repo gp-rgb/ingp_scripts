@@ -15,6 +15,7 @@ cd /home/ubuntu/georgia/instant-ngp/
 
 #pip install cython decorator pyyaml matplotlib
 pip install -r requirements.txt
+pip install cyclonedds
 #conda install --file requirements.txt
 
 conda install cmake=3.22.2 nvidia

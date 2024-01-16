@@ -10,6 +10,9 @@ export QT_QPA_PLATFORM=offscreen
 ngp_path=/home/ubuntu/georgia/instant-ngp/
 data_path=/home/ubuntu/georgia/data/
 
+## RECORD3D SETTINGS
+decimate=1
+
 ## VIDEO & IMAGE SETTINGS 
 fps=2
 aabb=2
@@ -20,27 +23,31 @@ overwrite=0
 n_steps=4096
 render=0
 mesh=0
-
+load_only=0
 ## PARSE ARGUMENTS
 if [ $# -lt 2 ]; then
     echo "Usage: $(basename $0) [TYPE] [DATASET]..."
     exit 1
 fi
 
-type="$1"
+datatype="$1"
 dataset="$2"
 shift 2
 
-while getopts 'a:f:hn:m:ors:' opt; do
+while getopts 'a:d:f:hln:m:ors:' opt; do
   case "$opt" in
     a|aabb)
         aabb=${OPTARG}
         ;;
-
+    d|decimate)
+        decimate=${OPTARG}
+        ;;
     f|fps)
         fps=${OPTARG}
         ;;
-
+    l|load_only)
+        load_only=1
+        ;;
     n|n_steps)
         n_steps=${OPTARG}
         ;;
@@ -62,7 +69,9 @@ while getopts 'a:f:hn:m:ors:' opt; do
       echo "    DATASET: chair, plant, statue, etc."
       echo "    Optional Arguments:"
       echo "    -a,--aabb:       <scene size>"
+      echo "    -d.--decimate:   <frame subsample rate, record3d>"
       echo "    -f,--fps:        <frames per second>"
+      echo "    -l,--load_only   "
       echo "    -n,--n_steps:    <number of training steps>"
       echo "    -m,--mesh:        <mesh resolution (64, 128, 256, 512)>"
       echo "    -o,--overwrite   "
@@ -83,7 +92,7 @@ echo "SOURCE PATH is:   ${source_path}"
 ## PREPARE DATA
 cd ${source_path}
 
-case ${type} in
+case ${datatype} in
     video)
         echo "Preparing VIDEO Data..."
         if [ "$overwrite" -eq 1 ] || ! [ -f "${source_path}/transforms.json" ]; then
@@ -102,7 +111,7 @@ case ${type} in
         mv ${dataset}.r3d ${dataset}.zip
         unzip ${dataset}.zip
         echo "Preparing RECORD3D Data..."
-        python ${ngp_path}/scripts/record3d2nerf.py --scene ${source_path} --subsample 5
+        python ${ngp_path}/scripts/record3d2nerf.py --scene ${source_path} --subsample ${decimate}
         ;;
     images)
         echo "Preparing IMAGE Data..."
@@ -132,30 +141,35 @@ esac
 
 ## TRAIN MODEL
 cd ${ngp_path}
-python3 ${ngp_path}/scripts/run.py \
-    ${source_path} \
-    --save_snapshot ${source_path}/checkpoint.ingp \
-    --n_steps ${n_steps}
+
+if [ ${load_only} -eq 0 ]; then
+    python3 ${ngp_path}/scripts/run.py \
+        ${source_path} \
+        --save_snapshot ${source_path}/checkpoint.ingp \
+        --n_steps ${n_steps}
+fi
 
 ## GENERATE OUTPUTS
 if [ "$render" -eq 1 ]; then
     python3 ${ngp_path}/scripts/run.py \
         --load_snapshot ${source_path}/checkpoint.ingp \
         --screenshot_transforms ${source_path}/transforms.json \
-        --screenshot_dir ${source_path}/renders/ \
-        --screenshot_spp 16 \
-        --width 720 --height 1280 \
+        --screenshot_dir ${source_path}/${dataset}_renders/ \
+        --screenshot_spp 4 \
+        --width 1280 --height 1280 \
         --n_steps 0
-    zip renders.zip ${source_path}/renders/ -r
+    cd ${source_path}
+    zip ${dataset}_renders.zip ./${dataset}_renders/ -r
     
 fi
 
 if ! [ "$mesh" -eq 0 ]; then
     python3 ${ngp_path}/scripts/run.py \
-        --load_snapshot ${data_path}/checkpoint.ingp \
+        --load_snapshot ${source_path}/checkpoint.ingp \
         --save_mesh ${source_path}/${dataset}.obj \
         --marching_cubes_res ${mesh} \
         --n_steps 0
-    zip ${dataset}.zip ${dataset}.obj
+    cd ${source_path}
+    zip ${dataset}_mesh.zip ${dataset}.obj
 fi
 
