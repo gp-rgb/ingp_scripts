@@ -2,7 +2,7 @@
 ## Description of Repository Purpose
 This repository contains shell scripts to:
 1. Build an executable instance of Instant-NGP on Amazon EC2 machine.
-2. Train a NeRF using the executable instance on a variety of Dataset types (video, images, blender and record3d).
+2. Train a NeRF using the executable instance on a variety of Dataset types (video, images, blender and record3d). From this trained NeRF, a mesh object or image renders may be generated.
 
 ## Environment Variables
 Ensure that environment variables inside `build.sh` and `train.sh` are updated to reflect the location of the Instant-NGP repository, and the parent directory of the datasets to train the NeRF model on.
