@@ -153,14 +153,14 @@ fi
 if [ "$render" -eq 1 ]; then
     python3 ${ngp_path}/scripts/run.py \
         --load_snapshot ${source_path}/checkpoint.ingp \
-        --screenshot_transforms ${source_path}/transforms.json \
+        --screenshot_transforms ${data_path}/bunny/traindata/transforms_train.json \ #${source_path}/transforms.json \
         --screenshot_dir ${source_path}/${dataset}_renders/ \
         --screenshot_spp 4 \
-        --width 1280 --height 1280 \
+        --width 720 --height 720 \
         --n_steps 0
     cd ${source_path}
     zip ${dataset}_renders.zip ./${dataset}_renders/ -r
-    
+    echo "Renders saved to: ${dataset}_renders.zip"    
 fi
 
 if ! [ "$mesh" -eq 0 ]; then
@@ -171,5 +171,6 @@ if ! [ "$mesh" -eq 0 ]; then
         --n_steps 0
     cd ${source_path}
     zip ${dataset}_mesh.zip ${dataset}.obj
+    echo "Mesh saved to: ${dataset}_mesh.zip"
 fi
 
