@@ -3,22 +3,32 @@ conda init bash
 source ~/.bashrc
 eval "$(conda shell.bash hook)"
 conda create --name merf python=3.9 pip;  conda activate merf
+conda install anaconda::cudnn 
 
-cd /home/ubuntu/georgia/google-data/
-mkdir nerf_360  
-cd /home/ubuntu/georgia/google-data/nerf_360
-curl -O http://storage.googleapis.com/gresearch/refraw360/360_v2.zip
-unzip 360_v2.zip
+#cd /home/ubuntu/georgia/google-data/
+#mkdir nerf_360  
+#cd /home/ubuntu/georgia/google-data/nerf_360
+#curl -O http://storage.googleapis.com/gresearch/refraw360/360_v2.zip
+#unzip 360_v2.zip
 
 cd /home/ubuntu/georgia/google-research/merf/
-#pip install -r requirements.txt
+git clone https://github.com/rmbrualla/pycolmap.git ./internal/pycolmap
 
+cd /home/ubuntu/georgia/ingp_scripts/
+pip install -r merf_requirements.txt
+pip uninstall tensorflow
+pip install tf-nightly[and-cuda]
+
+pip uninstall jax jaxlib
+cd /home/ubuntu/georgia/
+rm -r /home/ubuntu/georgia/jax/
+git clone --depth 1 -b jaxlib-v0.4.4 https://github.com/google/jax
+cd /home/ubuntu/georgia/jax/
 sudo apt install g++ python python3-dev
 pip install numpy wheel build
-python build/build.py --enable_cuda
+python build/build.py --enable_cuda --cuda_version 11.8 --cuda_path /usr/local/cuda/ --cudnn_path /opt/conda/envs/merf/ --cudnn_version 8
 pip install dist/*.whl
-
-git clone https://github.com/rmbrualla/pycolmap.git ./internal/pycolmap
+pip install -e .
 
 cd /home/ubuntu/georgia/google-research/merf/webviewer
 mkdir -p third_party

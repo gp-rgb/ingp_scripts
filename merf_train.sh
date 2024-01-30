@@ -15,10 +15,15 @@
 #!/bin/bash
 
 SCENE=garden
-DATA_DIR=/home/ubuntu/georgia/google-research/nerf_360
-CHECKPOINT_DIR=/home/ubuntu/georgia/google-research/checkpoints/merf/"$SCENE"
+DATA_DIR=/home/ubuntu/georgia/google-data/nerf_360/
+CHECKPOINT_DIR=/home/ubuntu/georgia/google-checkpoints/merf/"$SCENE"
 
 export CUDA_VISIBLE_DEVICES=0
+export XLA_PYTHON_CLIENT_PREALLOCATE=true #prevents jax from preallocating 75% of GPU memory on start -- this can interfere with tensorflow also attempting to use GPU leading to OOM error
+export XLA_PYTHON_CLIENT_MEM_FRACTION=0.75
+export XLA_PYTHON_CLIENT_ALLOCATOR=platform
+
+cd /home/ubuntu/georgia/google-research/merf/
 python /home/ubuntu/georgia/google-research/merf/train.py \
   --gin_configs=configs/merf.gin \
   --gin_bindings="Config.data_dir = '${DATA_DIR}/${SCENE}'" \
