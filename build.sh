@@ -1,14 +1,16 @@
 #!/bin/bash -l
 conda init bash
 source ~/.bashrc
-conda create --name ingp_env8 python=3.8 
+conda create --name ngp python=3.8 
 eval "$(conda shell.bash hook)"
-conda activate ingp_env8
+conda activate ngp
 conda info
 cd /home/ubuntu/georgia/
 rm -r /home/ubuntu/georgia/instant-ngp/
-git clone --recursive https://github.com/nvlabs/instant-ngp
+#git clone --recursive https://github.com/nvlabs/instant-ngp
+git clone --recursive https://github.com/gp-rgb/instant-ngp.git
 cd /home/ubuntu/georgia/instant-ngp/
+git checkout shorthand
 
 #conda install -n base conda-libmamba-solver
 #conda config --set solver libmamba

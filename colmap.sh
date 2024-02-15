@@ -3,7 +3,7 @@ cd /home/ubuntu/georgia
 
 sudo apt-get install \
     git \
-    #cmake \
+    cmake \
     ninja-build \
     build-essential \
     libboost-program-options-dev \
@@ -28,7 +28,8 @@ sudo apt-get install \
 sudo apt-get install -y \
     nvidia-cuda-toolkit \
     nvidia-cuda-toolkit-gcc
-
+export QT_QPA_PLATFORM=offscreen
+source ~/.bashrc
 git clone https://github.com/colmap/colmap.git
 cd colmap
 mkdir build

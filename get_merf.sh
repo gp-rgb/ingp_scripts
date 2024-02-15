@@ -17,7 +17,7 @@ git clone https://github.com/rmbrualla/pycolmap.git ./internal/pycolmap
 cd /home/ubuntu/georgia/ingp_scripts/
 pip install -r merf_requirements.txt
 pip uninstall tensorflow
-pip install tf-nightly[and-cuda]
+pip install tensorflow[and-cuda]
 
 pip uninstall jax jaxlib
 cd /home/ubuntu/georgia/

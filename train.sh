@@ -2,7 +2,7 @@
 conda init bash
 source ~/.bashrc
 eval "$(conda shell.bash hook)"
-conda activate ingp_env8
+conda activate ngp
 
 export QT_QPA_PLATFORM=offscreen
 
@@ -15,7 +15,7 @@ decimate=1
 
 ## VIDEO & IMAGE SETTINGS 
 fps=2
-aabb=2
+aabb=4
 sharpen=0
 
 ## TRAINING SETTINGS
@@ -24,6 +24,7 @@ n_steps=4096
 render=0
 mesh=0
 load_only=0
+
 ## PARSE ARGUMENTS
 if [ $# -lt 2 ]; then
     echo "Usage: $(basename $0) [TYPE] [DATASET]..."
@@ -94,10 +95,10 @@ cd ${source_path}
 
 case ${datatype} in
     video)
-        echo "Preparing VIDEO Data..."
         if [ "$overwrite" -eq 1 ] || ! [ -f "${source_path}/transforms.json" ]; then
             ## run colmap if: overwrite is set OR transforms do not yet exist
-            rm ${source_path}/transforms.json
+            rm -r ${source_path}/images/ 
+            start=$(date +%s.%N)
             python3 ${ngp_path}/scripts/colmap2nerf.py \
                 --video_in ${dataset}.mp4 \
                 --video_fps ${fps} \
@@ -105,28 +106,32 @@ case ${datatype} in
                 --aabb_scale ${aabb} \
                 --colmap_matcher sequential \
                 --overwrite
+            dur=$(echo "$(date +%s.%N) - $start" | bc)
+            printf "Colmap Execution Time: %.6f seconds" $dur
         fi
         ;;
     record3d)
-        mv ${dataset}.r3d ${dataset}.zip
-        unzip ${dataset}.zip
-        echo "Preparing RECORD3D Data..."
-        python ${ngp_path}/scripts/record3d2nerf.py --scene ${source_path} --subsample ${decimate}
+        if [ "$overwrite" -eq 1 ] || ! [ -f "${source_path}/transforms.json" ]; then
+                mv ${dataset}.r3d ${dataset}.zip
+                unzip ${dataset}.zip
+                python ${ngp_path}/scripts/record3d2nerf.py --scene ${source_path} --subsample ${decimate}
+        fi
         ;;
     images)
-        echo "Preparing IMAGE Data..."
         if [ "$overwrite" -eq 1 ] || ! [ -f "${source_path}/transforms.json" ]; then
             ## run colmap if: overwrite is set OR transforms do not yet exist
             rm ${source_path}/transforms.json
+            start=$(date +%s.%N)
             python3 ${ngp_path}/scripts/colmap2nerf.py \
                 --colmap_matcher exhaustive \
                 --run_colmap \
                 --aabb_scale ${aabb} \
                 --overwrite
+            dur=$(echo "$(date +%s.%N) - $start" | bc)
+            printf "Colmap Execution Time: %.6f seconds" $dur
         fi
         ;;
     blender)
-        echo "Preparing BLENDER Data..."
         mkdir -p traindata testdata
         mv train traindata
         mv transforms_train.json traindata
@@ -151,15 +156,19 @@ fi
 
 ## GENERATE OUTPUTS
 if [ "$render" -eq 1 ]; then
+    rm -r ${source_path}/${dataset}_renders/
+    mkdir ${source_path}/${dataset}_renders/
+    
     python3 ${ngp_path}/scripts/run.py \
         --load_snapshot ${source_path}/checkpoint.ingp \
-        --screenshot_transforms ${data_path}/bunny/traindata/transforms_train.json \ #${source_path}/transforms.json \
+        --screenshot_transforms ${source_path}/transforms.json \
         --screenshot_dir ${source_path}/${dataset}_renders/ \
         --screenshot_spp 4 \
         --width 720 --height 720 \
         --n_steps 0
+    #--screenshot_transforms ${data_path}/bunny/traindata/transforms_train.json \ 
     cd ${source_path}
-    zip ${dataset}_renders.zip ./${dataset}_renders/ -r
+    zip ${dataset}_renders_${n_steps}.zip ./${dataset}_renders/ -r
     echo "Renders saved to: ${dataset}_renders.zip"    
 fi
 
