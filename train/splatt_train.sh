@@ -8,7 +8,7 @@ DATASET=orchid_splatt
 
 source_directory="/home/ubuntu/georgia/data/${SOURCE}/rgbd/"
 destination_directory="/home/ubuntu/georgia/data/${DATASET}/input"
-number_of_links=50
+number_of_links=100
 
 # Create destination directory if it doesn't exist
 rm -r ${destination_directory}
@@ -29,7 +29,7 @@ python convert.py \
 dur=$(echo "$(date +%s.%N) - $start" | bc)
 printf "Colmap Execution Time: %.6f seconds" $dur
 
-for N in 32000 
+for N in 125 250 500 1000 2000 4000 8000 
 do
         echo $N
         python train.py \
@@ -43,15 +43,6 @@ do
                 -m /home/ubuntu/georgia/data/${DATASET}/${DATASET}_model
 
 done
-python train.py \
-        --iterations 32000 \
-        --eval \
-        -s /home/ubuntu/georgia/data/${DATASET}/ \
-        -m /home/ubuntu/georgia/data/${DATASET}/${DATASET}_model \
-        --save_iterations 500 1000 2000 4000 8000 16000 32000 
-python render.py \
-        --eval \
-        -m /home/ubuntu/georgia/data/${DATASET}/${DATASET}_model
 
 cd /home/ubuntu/georgia/data/${DATASET}/
-zip ${DATASET}_splatt.zip /home/ubuntu/georgia/data/${DATASET}/${DATASET}_model/  -r
+zip ${DATASET}_100.zip /home/ubuntu/georgia/data/${DATASET}/${DATASET}_model/  -r

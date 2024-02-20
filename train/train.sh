@@ -162,11 +162,13 @@ if [ "$render" -eq 1 ]; then
     python3 ${ngp_path}/scripts/run.py \
         --load_snapshot ${source_path}/checkpoint.ingp \
         --screenshot_transforms ${source_path}/transforms.json \
+        --screenshot_frames 1 10 20 30 40 50 60 70 80 90 100 \
         --screenshot_dir ${source_path}/${dataset}_renders/ \
-        --screenshot_spp 4 \
-        --width 720 --height 720 \
+        --screenshot_spp 2 \
+        --width 1420 --height 1892 \
         --n_steps 0
-    #--screenshot_transforms ${data_path}/bunny/traindata/transforms_train.json \ 
+        #--screenshot_transforms ${source_path}/transforms.json \
+        #--screenshot_transforms ${data_path}/bunny/traindata/transforms_train.json \ 
     cd ${source_path}
     zip ${dataset}_renders_${n_steps}.zip ./${dataset}_renders/ -r
     echo "Renders saved to: ${dataset}_renders.zip"    
@@ -175,7 +177,7 @@ fi
 if ! [ "$mesh" -eq 0 ]; then
     python3 ${ngp_path}/scripts/run.py \
         --load_snapshot ${source_path}/checkpoint.ingp \
-        --save_mesh ${source_path}/${dataset}.obj \
+        --save_mesh ${source_path}/${dataset}_${mesh}.obj \
         --marching_cubes_res ${mesh} \
         --n_steps 0
     cd ${source_path}
