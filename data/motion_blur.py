@@ -44,7 +44,7 @@ def main(args):
     if args.delete:
         for blurry_file in blurry_jpgs:
             os.remove(blurry_file)
-    print(f"{len(blurry_jpgs)} blurry images deleted from {args.directory}")
+        print(f"{len(blurry_jpgs)} blurry images deleted from {args.directory}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Removes Images with Focus Lower than Threshold.")
