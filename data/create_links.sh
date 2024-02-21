@@ -1,10 +1,9 @@
 SOURCE=still_life
-DATASET=still_life_frames
+DATASET=still_life_splatt
 
 source_directory="/home/ubuntu/georgia/data/${SOURCE}/rgbd/"
-destination_directory="/home/ubuntu/georgia/data/${DATASET}/images"
+destination_directory="/home/ubuntu/georgia/data/${DATASET}/input"
 number_of_links=50
-
 
 # Create destination directory if it doesn't exist
 rm -r ${destination_directory}
