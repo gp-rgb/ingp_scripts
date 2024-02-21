@@ -1,7 +1,10 @@
 import cv2
 import os
+import matplotlib
 import matplotlib.pyplot as plt
 import argparse
+
+matplotlib.use('module://drawilleplot')
 
 def get_focus(grey):
     # https://pyimagesearch.com/2015/09/07/blur-detection-with-opencv/
@@ -10,7 +13,7 @@ def get_focus(grey):
 def is_blurry(image, thresh):
     grey = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     focus = get_focus(grey)
-    return (focus<thresh) 
+    return (focus<thresh, focus) 
 
 def get_file_paths(path,ext=".jpg"):
     files = os.listdir(path)
@@ -19,28 +22,35 @@ def get_file_paths(path,ext=".jpg"):
 
 def plot_histogram(data,n_bins,thresh):
     plt.hist(data, bins=n_bins, edgecolor='black')  # You can adjust the number of bins as needed
-    plt.xlabel('Values, Red Dot Indicates Threshold')
+    plt.xlabel('Values')
     plt.ylabel('Frequency')
     plt.title('Image Focus Frequencies')
-    plt.scatter([0], [thresh], color='red', marker='o', s=100)  # Adjust the coordinates (x, y) as needed
+    plt.figure(figsize=(6,3))
     plt.show()
 
 def main(args):
-    # Your main logic goes here
     print("Received arguments:", args)
     jpg_paths = get_file_paths(path=args.directory, ext=args.ext)
     blurry_jpgs = []
+    focus_scores = []
 
     os.chdir(args.directory)
 
     for file in jpg_paths:
         image = cv2.imread(file)
-        if is_blurry(image,thresh=args.thresh):
+        blurry, focus_val = is_blurry(image,thresh=args.thresh)
+        focus_scores.append(focus_val)
+        if blurry:
             blurry_jpgs.append(os.path.join(args.directory,file))
             #plt.imshow(image,cv2.COLOR_BGR2RGB)
             #plt.show()
     
+    print(f"{len(jpg_paths)} were analysed for their Focus Scores. The distribution of values is as follows:")
+    plot_histogram(focus_scores,10,args.thresh)
     print(f"{len(blurry_jpgs)} images (out of {len(jpg_paths)}) have been detected that are below the desired focus threshold of {args.thresh}.")
+    
+    
+
     if args.delete:
         for blurry_file in blurry_jpgs:
             os.remove(blurry_file)
