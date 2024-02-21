@@ -41,6 +41,10 @@ def main(args):
             #plt.show()
     
     print(f"{len(blurry_jpgs)} images (out of {len(jpg_paths)}) have been detected that are below the desired focus threshold of {args.thresh}.")
+    if args.delete:
+        for blurry_file in blurry_jpgs:
+            os.remove(blurry_file)
+    print(f"{len(blurry_jpgs)} blurry images deleted from {args.directory}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Removes Images with Focus Lower than Threshold.")
