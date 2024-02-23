@@ -121,6 +121,7 @@ case ${datatype} in
         if [ "$overwrite" -eq 1 ] || ! [ -f "${source_path}/transforms.json" ]; then
             ## run colmap if: overwrite is set OR transforms do not yet exist
             rm ${source_path}/transforms.json
+            
             start=$(date +%s.%N)
             python3 ${ngp_path}/scripts/colmap2nerf.py \
                 --colmap_matcher exhaustive \

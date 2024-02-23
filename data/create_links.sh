@@ -1,9 +1,9 @@
-SOURCE=still_life
-DATASET=still_life_splatt
+SOURCE=chair
+DATASET=chair_frames
 
-source_directory="/home/ubuntu/georgia/data/${SOURCE}/rgbd/"
+source_directory="/home/ubuntu/georgia/data/${SOURCE}/images/"
 destination_directory="/home/ubuntu/georgia/data/${DATASET}/input"
-number_of_links=50
+number_of_links=250
 
 # Create destination directory if it doesn't exist
 rm -r ${destination_directory}
