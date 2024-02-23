@@ -69,6 +69,7 @@ colmap_path=/home/ubuntu/georgia/colmap/build/src/colmap/exe/colmap
 
 input_path=${data_path}/${name}/
 output_path=${data_path}/${name}_splatt/
+model_path=$output_path/${name}_model/
 
 ### CREATE DATASET
 if [ "$create_dataset" -eq 1 ]; then
@@ -101,12 +102,12 @@ if [ "$sweep" -eq 1 ]; then
                         python train.py \
                                 --iterations ${N} \
                                 --eval \
-                                -s /home/ubuntu/georgia/data/${name}/ \
-                                -m /home/ubuntu/georgia/data/${name}/${name}_model \
+                                -s ${output_path} \
+                                -m ${model_path} \
                                 --save_iterations ${N} 
                                 python render.py \
                                         --eval \
-                                        -m /home/ubuntu/georgia/data/${name}/${name}_model
+                                        -m ${model_path}
                         
                 done
         else   
@@ -114,8 +115,8 @@ if [ "$sweep" -eq 1 ]; then
                 python train.py \
                         --iterations ${iterations} \
                         --eval \
-                        -s /home/ubuntu/georgia/data/${name}/ \
-                        -m /home/ubuntu/georgia/data/${name}/${name}_model \
+                        -s ${output_path} \
+                        -m ${model_path} \
                         --save_iterations ${N} 
         fi
 else
@@ -123,8 +124,8 @@ else
         python train.py \
                         --iterations ${iterations} \
                         --eval \
-                        -s /home/ubuntu/georgia/data/${name}/ \
-                        -m /home/ubuntu/georgia/data/${name}/${name}_model \
+                        -s ${output_path} \
+                        -m ${model_path} \
                         --save_iterations ${iterations}
 fi
 
