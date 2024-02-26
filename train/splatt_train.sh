@@ -73,7 +73,8 @@ model_path=$output_path/${name}_model/
 
 ### CREATE DATASET
 if [ "$create_dataset" -eq 1 ]; then
-        num_links=`python -c "print(round( (($prune/100.0)+1) * $number_images ))"`
+        rm -r $output_path
+        num_links=`python -c "print( round($number_images / (1 - ($prune/100)) ))"`
     
         echo "NUM Images is ${number_images}"
         echo "NUM LINKS is ${num_links}"
@@ -130,6 +131,6 @@ else
 fi
 
 ### ZIP RESULTS
-cd /home/ubuntu/georgia/data/${name}/
-zip ${name}_100.zip /home/ubuntu/georgia/data/${name}/${name}_model/  -r
+cd ${output_path}
+zip ${name}_model.zip ./${name}_model/  -r
 
