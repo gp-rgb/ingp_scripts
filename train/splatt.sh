@@ -71,6 +71,7 @@ colmap_path=/home/ubuntu/georgia/colmap/build/src/colmap/exe/colmap
 
 images_source="images" 
 images_dest="input"
+
 source_path=${data_path}/${name}/
 dest_path=${data_path}/${name}_splatt/
 images_path=${dest_path}/${images_source}/
@@ -80,8 +81,6 @@ model_path=${dest_path}/${name}_model/
 if [ "$create_dataset" -eq 1 ]; then
         rm -r $dest_path
         num_links=`python -c "print( round($number_images / (1 - ($prune/100)) ))"`
-        #echo "NUM Images is ${number_images}"
-        #echo "NUM LINKS is ${num_links}"
         ${home_path}/data/create_linked_dataset.sh ${source_path} ${dest_path} -n ${num_links} -s ${images_source} -d ${images_dest}
         python ${home_path}/data/motion_blur.py ${images_path} --delete True --percentage ${prune}
 fi
