@@ -9,4 +9,5 @@ eval "$(conda shell.bash hook)"
 conda env remove -n gaussian_splatting
 conda env create --file environment.yml
 conda activate gaussian_splatting
+conda install -c conda-forge ncurses
 pip install opencv-python matplotlib drawilleplot
